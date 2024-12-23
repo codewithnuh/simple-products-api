@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
 const common_1 = require("@nestjs/common");
 const product_service_1 = require("./product.service");
-const product_entity_1 = require("./entities/product.entity");
 let ProductController = class ProductController {
     constructor(productService) {
         this.productService = productService;
@@ -24,16 +23,16 @@ let ProductController = class ProductController {
         return this.productService.findAll();
     }
     findOne(id) {
-        return this.productService.findOne(+id);
+        return this.productService.findOne(id);
     }
     create(product) {
         return this.productService.create(product);
     }
     update(id, updatedData) {
-        return this.productService.update(+id, updatedData);
+        return this.productService.update(id, updatedData);
     }
     remove(id) {
-        return this.productService.remove(+id);
+        return this.productService.remove(id);
     }
 };
 exports.ProductController = ProductController;
@@ -47,14 +46,14 @@ __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [product_entity_1.Product]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "create", null);
 __decorate([
@@ -62,14 +61,14 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "remove", null);
 exports.ProductController = ProductController = __decorate([

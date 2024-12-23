@@ -7,7 +7,7 @@ import { Product } from './entities/product.entity';
 export class ProductService {
   constructor(
     @InjectRepository(Product)
-    private productRepository: Repository<Product>,
+    private readonly productRepository: Repository<Product>,
   ) {}
 
   findAll(): Promise<Product[]> {
@@ -18,12 +18,14 @@ export class ProductService {
     return this.productRepository.findOneBy({ id });
   }
 
-  create(product: Product): Promise<Product> {
-    return this.productRepository.save(product);
+  create(product: Partial<Product>): Promise<Product> {
+    const newProduct = this.productRepository.create(product);
+    return this.productRepository.save(newProduct);
   }
 
-  update(id: number, updatedData: Partial<Product>): Promise<Product> {
-    return this.productRepository.save({ ...updatedData, id });
+  async update(id: number, updatedData: Partial<Product>): Promise<Product> {
+    await this.productRepository.update(id, updatedData);
+    return this.productRepository.findOneBy({ id });
   }
 
   async remove(id: number): Promise<void> {

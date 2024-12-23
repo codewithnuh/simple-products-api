@@ -10,14 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DatabaseService = void 0;
-const serverless_1 = require("@neondatabase/serverless");
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const serverless_1 = require("@neondatabase/serverless");
 let DatabaseService = class DatabaseService {
     constructor(configService) {
         this.configService = configService;
         const databaseUrl = this.configService.get('DATABASE_URL');
+        if (!databaseUrl) {
+            throw new Error('DATABASE_URL is not defined in environment variables');
+        }
         this.sql = (0, serverless_1.neon)(databaseUrl);
+    }
+    async getData(query, params = []) {
+        const data = await this.sql(query, params);
+        return data;
     }
 };
 exports.DatabaseService = DatabaseService;

@@ -20,25 +20,25 @@ export class ProductController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Product> {
-    return this.productService.findOne(+id);
+  findOne(@Param('id') id: number): Promise<Product> {
+    return this.productService.findOne(id);
   }
 
   @Post()
-  create(@Body() product: Product): Promise<Product> {
+  create(@Body() product: Partial<Product>): Promise<Product> {
     return this.productService.create(product);
   }
 
   @Put(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updatedData: Partial<Product>,
   ): Promise<Product> {
-    return this.productService.update(+id, updatedData);
+    return this.productService.update(id, updatedData);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.productService.remove(+id);
+  remove(@Param('id') id: number): Promise<void> {
+    return this.productService.remove(id);
   }
 }

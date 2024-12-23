@@ -28,10 +28,12 @@ let ProductService = class ProductService {
         return this.productRepository.findOneBy({ id });
     }
     create(product) {
-        return this.productRepository.save(product);
+        const newProduct = this.productRepository.create(product);
+        return this.productRepository.save(newProduct);
     }
-    update(id, updatedData) {
-        return this.productRepository.save({ ...updatedData, id });
+    async update(id, updatedData) {
+        await this.productRepository.update(id, updatedData);
+        return this.productRepository.findOneBy({ id });
     }
     async remove(id) {
         await this.productRepository.delete(id);
