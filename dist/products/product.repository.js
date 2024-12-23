@@ -5,21 +5,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductsModule = void 0;
-const common_1 = require("@nestjs/common");
-const products_controller_1 = require("./products.controller");
-const product_service_1 = require("./product.service");
-const typeorm_1 = require("@nestjs/typeorm");
-const product_entity_1 = require("./entities/product.entity");
-let ProductsModule = class ProductsModule {
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-exports.ProductsModule = ProductsModule;
-exports.ProductsModule = ProductsModule = __decorate([
-    (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([product_entity_1.Product])],
-        controllers: [products_controller_1.ProductController],
-        providers: [product_service_1.ProductService],
-    })
-], ProductsModule);
-//# sourceMappingURL=products.module.js.map
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProductRepository = void 0;
+const common_1 = require("@nestjs/common");
+const typeorm_1 = require("typeorm");
+const product_entity_1 = require("./entities/product.entity");
+let ProductRepository = class ProductRepository extends typeorm_1.Repository {
+    constructor(dataSource) {
+        super(product_entity_1.Product, dataSource.createEntityManager());
+        this.dataSource = dataSource;
+    }
+};
+exports.ProductRepository = ProductRepository;
+exports.ProductRepository = ProductRepository = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeorm_1.DataSource])
+], ProductRepository);
+//# sourceMappingURL=product.repository.js.map

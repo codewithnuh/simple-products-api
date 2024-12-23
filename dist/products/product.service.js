@@ -5,51 +5,42 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductsService = void 0;
+exports.ProductService = void 0;
 const common_1 = require("@nestjs/common");
-let ProductsService = class ProductsService {
-    constructor() {
-        this.products = [
-            { id: 1, name: 'Product A', description: 'Description of A', price: 10 },
-            { id: 2, name: 'Product B', description: 'Description of B', price: 20 },
-        ];
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
+const product_entity_1 = require("./entities/product.entity");
+let ProductService = class ProductService {
+    constructor(productRepository) {
+        this.productRepository = productRepository;
     }
     findAll() {
-        return this.products;
+        return this.productRepository.find();
     }
     findOne(id) {
-        const product = this.products.find((p) => p.id === id);
-        if (!product) {
-            throw new common_1.NotFoundException(`Product with ID ${id} not found`);
-        }
-        return product;
+        return this.productRepository.findOneBy({ id });
     }
     create(product) {
-        const newProduct = {
-            id: this.products.length + 1,
-            ...product,
-        };
-        this.products.push(newProduct);
-        return newProduct;
+        return this.productRepository.save(product);
     }
-    update(id, updateProductDto) {
-        const index = this.products.findIndex((p) => p.id === id);
-        if (index === -1) {
-            throw new common_1.NotFoundException('Product not found');
-        }
-        this.products[index] = {
-            ...this.products[index],
-            ...updateProductDto,
-        };
-        return this.products[index];
+    update(id, updatedData) {
+        return this.productRepository.save({ ...updatedData, id });
     }
-    delete(id) {
-        this.products = this.products.filter((p) => p.id !== id);
+    async remove(id) {
+        await this.productRepository.delete(id);
     }
 };
-exports.ProductsService = ProductsService;
-exports.ProductsService = ProductsService = __decorate([
-    (0, common_1.Injectable)()
-], ProductsService);
+exports.ProductService = ProductService;
+exports.ProductService = ProductService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(product_entity_1.Product)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
+], ProductService);
 //# sourceMappingURL=product.service.js.map

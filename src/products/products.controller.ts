@@ -1,58 +1,44 @@
-// src/products/products.controller.ts
 import {
   Controller,
   Get,
-  Param,
   Post,
-  Body,
-  ParseIntPipe,
-  NotFoundException,
   Put,
   Delete,
-  ValidationPipe,
-  UsePipes,
+  Param,
+  Body,
 } from '@nestjs/common';
-import { ProductsService } from './product.service';
-import { Product } from './interface/product.interface';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/updata-products.dto';
+import { ProductService } from './product.service';
+import { Product } from './entities/product.entity';
+
 @Controller('products')
-@UsePipes(new ValidationPipe())
-export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+export class ProductController {
+  constructor(private readonly productService: ProductService) {}
 
   @Get()
-  findAll(): Product[] {
-    return this.productsService.findAll();
+  findAll(): Promise<Product[]> {
+    return this.productService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Product {
-    try {
-      return this.productsService.findOne(id);
-    } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      throw new NotFoundException('product not found');
-    }
+  findOne(@Param('id') id: string): Promise<Product> {
+    return this.productService.findOne(+id);
   }
 
   @Post()
-  @UsePipes(new ValidationPipe())
-  create(@Body() createProductDto: CreateProductDto): Product {
-    return this.productsService.create(createProductDto);
+  create(@Body() product: Product): Promise<Product> {
+    return this.productService.create(product);
   }
 
   @Put(':id')
-  @UsePipes(new ValidationPipe())
   update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateProductDto: UpdateProductDto,
-  ): Product {
-    return this.productsService.update(id, updateProductDto);
+    @Param('id') id: string,
+    @Body() updatedData: Partial<Product>,
+  ): Promise<Product> {
+    return this.productService.update(+id, updatedData);
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id: number): void {
-    return this.productsService.delete(id);
+  remove(@Param('id') id: string): Promise<void> {
+    return this.productService.remove(+id);
   }
 }

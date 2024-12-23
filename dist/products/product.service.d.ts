@@ -1,10 +1,11 @@
-import { Product } from './interface/product.interface';
-import { UpdateProductDto } from './dto/updata-products.dto';
-export declare class ProductsService {
-    private products;
-    findAll(): Product[];
-    findOne(id: number): Product;
-    create(product: Omit<Product, 'id'>): Product;
-    update(id: number, updateProductDto: UpdateProductDto): Product;
-    delete(id: number): void;
+import { Repository } from 'typeorm';
+import { Product } from './entities/product.entity';
+export declare class ProductService {
+    private productRepository;
+    constructor(productRepository: Repository<Product>);
+    findAll(): Promise<Product[]>;
+    findOne(id: number): Promise<Product>;
+    create(product: Product): Promise<Product>;
+    update(id: number, updatedData: Partial<Product>): Promise<Product>;
+    remove(id: number): Promise<void>;
 }

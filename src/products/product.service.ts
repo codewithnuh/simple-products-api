@@ -1,49 +1,32 @@
-// src/products/products.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Product } from './interface/product.interface';
-import { UpdateProductDto } from './dto/updata-products.dto';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Product } from './entities/product.entity';
+
 @Injectable()
-export class ProductsService {
-  private products: Product[] = [
-    { id: 1, name: 'Product A', description: 'Description of A', price: 10 },
-    { id: 2, name: 'Product B', description: 'Description of B', price: 20 },
-  ];
+export class ProductService {
+  constructor(
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
+  ) {}
 
-  findAll(): Product[] {
-    return this.products;
+  findAll(): Promise<Product[]> {
+    return this.productRepository.find();
   }
 
-  findOne(id: number): Product {
-    const product = this.products.find((p) => p.id === id);
-    if (!product) {
-      throw new NotFoundException(`Product with ID ${id} not found`);
-    }
-    return product;
+  findOne(id: number): Promise<Product> {
+    return this.productRepository.findOneBy({ id });
   }
 
-  create(product: Omit<Product, 'id'>): Product {
-    const newProduct = {
-      id: this.products.length + 1,
-      ...product,
-    };
-    this.products.push(newProduct);
-    return newProduct;
+  create(product: Product): Promise<Product> {
+    return this.productRepository.save(product);
   }
-  update(id: number, updateProductDto: UpdateProductDto): Product {
-    const index = this.products.findIndex((p) => p.id === id);
-    if (index === -1) {
-      throw new NotFoundException('Product not found');
-    }
 
-    // Update the product using the provided DTO properties
-    this.products[index] = {
-      ...this.products[index], // Keep existing properties
-      ...updateProductDto, // Overwrite with DTO values
-    };
-
-    return this.products[index];
+  update(id: number, updatedData: Partial<Product>): Promise<Product> {
+    return this.productRepository.save({ ...updatedData, id });
   }
-  delete(id: number): void {
-    this.products = this.products.filter((p) => p.id !== id);
+
+  async remove(id: number): Promise<void> {
+    await this.productRepository.delete(id);
   }
 }
